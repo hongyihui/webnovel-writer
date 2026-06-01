@@ -73,6 +73,31 @@ def test_load_json_arg_from_file(tmp_path):
     assert result == {"a": 1}
 
 
+def test_load_json_arg_rejects_file_outside_base_dir(tmp_path):
+    project = tmp_path / "project"
+    project.mkdir()
+    outside = tmp_path / "secret.json"
+    outside.write_text('{"secret": true}', encoding="utf-8")
+
+    with pytest.raises(ValueError, match="outside allowed directory"):
+        load_json_arg(f"@{outside}", base_dir=project)
+
+
+def test_load_json_arg_allows_file_inside_base_dir(tmp_path):
+    project = tmp_path / "project"
+    project.mkdir()
+    payload = project / "payload.json"
+    payload.write_text('{"ok": true}', encoding="utf-8")
+
+    assert load_json_arg(f"@{payload}", base_dir=project) == {"ok": True}
+
+
+def test_load_json_arg_stdin_ignores_base_dir(monkeypatch, tmp_path):
+    monkeypatch.setattr(sys, "stdin", StringIO('{"stdin": true}'))
+
+    assert load_json_arg("@-", base_dir=tmp_path) == {"stdin": True}
+
+
 def test_load_json_arg_from_stdin(monkeypatch):
     monkeypatch.setattr(sys, "stdin", StringIO('{"b":2}'))
     result = load_json_arg("@-")

@@ -397,7 +397,7 @@ def main():
         emit_success([s.__dict__ for s in samples], message="samples")
 
     elif args.command == "extract":
-        scenes = load_json_arg(args.scenes)
+        scenes = load_json_arg(args.scenes, base_dir=sampler.config.project_root)
         candidates = sampler.extract_candidates(
             chapter=args.chapter,
             content="",

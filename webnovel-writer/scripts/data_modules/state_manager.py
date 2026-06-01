@@ -1406,7 +1406,7 @@ def main():
         emit_success(payload, message="entities")
 
     elif args.command == "process-chapter":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         validated = None
         last_exc = None
         for _ in range(3):

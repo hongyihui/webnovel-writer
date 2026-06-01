@@ -603,7 +603,7 @@ def main():
         emit_success(data, message="alias_index")
 
     elif args.command == "process-chapter":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=config.project_root)
         stats = manager.process_chapter_entities(
             chapter=args.chapter,
             entities_appeared=data.get("entities_appeared", []),

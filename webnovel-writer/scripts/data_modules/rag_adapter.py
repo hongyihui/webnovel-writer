@@ -1474,7 +1474,7 @@ def main():
         emit_success(stats, message="stats")
 
     elif args.command == "index-chapter":
-        scenes = load_json_arg(args.scenes)
+        scenes = load_json_arg(args.scenes, base_dir=config.project_root)
         chunks = []
 
         # summary chunk

@@ -74,12 +74,27 @@ def normalize_global_project_root(argv: List[str], *, flag: str = "--project-roo
     return [flag, value] + rest
 
 
-def load_json_arg(raw: str) -> Any:
+def _resolve_json_arg_file(target: str, *, base_dir: str | Path | None = None) -> Path:
+    path = Path(target).expanduser()
+    if not path.is_absolute() and base_dir is not None:
+        path = Path(base_dir) / path
+    resolved = path.resolve()
+    if base_dir is not None:
+        base = Path(base_dir).expanduser().resolve()
+        try:
+            resolved.relative_to(base)
+        except ValueError as exc:
+            raise ValueError(f"json arg file outside allowed directory: {resolved}") from exc
+    return resolved
+
+
+def load_json_arg(raw: str, *, base_dir: str | Path | None = None) -> Any:
     """
     解析 CLI 传入的 JSON 参数，支持两种形式：
     - 直接 JSON 字符串：'{"a":1}'
     - @ 文件路径：'@data.json'（从文件读取 JSON，避免 shell 引号地狱）
       - 特例：'@-' 表示从 stdin 读取
+      - 当传入 base_dir 时，@ 文件必须位于 base_dir 内
     """
     if raw is None:
         raise ValueError("missing json arg")
@@ -91,6 +106,6 @@ def load_json_arg(raw: str) -> Any:
         if target == "-":
             content = sys.stdin.read()
         else:
-            content = Path(target).read_text(encoding="utf-8")
+            content = _resolve_json_arg_file(target, base_dir=base_dir).read_text(encoding="utf-8")
         return json.loads(content)
     return json.loads(text)

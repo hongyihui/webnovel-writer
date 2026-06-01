@@ -1030,8 +1030,8 @@ def main():
         emit_success(scenes, message="scenes")
 
     elif args.command == "process-chapter":
-        entities = load_json_arg(args.entities)
-        scenes = load_json_arg(args.scenes)
+        entities = load_json_arg(args.entities, base_dir=args.project_root)
+        scenes = load_json_arg(args.scenes, base_dir=args.project_root)
         stats = manager.process_chapter_data(
             chapter=args.chapter,
             title=args.title,
@@ -1132,7 +1132,7 @@ def main():
 
     elif args.command == "record-relationship-event":
         try:
-            data = load_json_arg(args.data)
+            data = load_json_arg(args.data, base_dir=args.project_root)
         except (TypeError, ValueError, json.JSONDecodeError):
             emit_error("INVALID_RELATIONSHIP_EVENT", "关系事件 JSON 无效")
         else:
@@ -1156,7 +1156,7 @@ def main():
                 emit_error("INVALID_RELATIONSHIP_EVENT", "关系事件参数无效，未写入")
 
     elif args.command == "upsert-entity":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         entity = EntityMeta(
             id=data["id"],
             type=data["type"],
@@ -1173,7 +1173,7 @@ def main():
         emit_success({"id": entity.id, "created": is_new}, message="entity_upserted")
 
     elif args.command == "upsert-relationship":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         rel = RelationshipMeta(
             from_entity=data["from_entity"],
             to_entity=data["to_entity"],
@@ -1188,7 +1188,7 @@ def main():
         )
 
     elif args.command == "record-state-change":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         change = StateChangeMeta(
             entity_id=data["entity_id"],
             field=data["field"],
@@ -1224,7 +1224,7 @@ def main():
         emit_success(rows, message="invalid_list")
 
     elif args.command == "save-review-metrics":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         metrics = ReviewMetrics(
             start_chapter=data["start_chapter"],
             end_chapter=data["end_chapter"],
@@ -1250,7 +1250,7 @@ def main():
         emit_success(stats, message="review_trend_stats")
 
     elif args.command == "save-writing-checklist-score":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         metrics = WritingChecklistScoreMeta(
             chapter=data["chapter"],
             template=data.get("template", "plot"),
@@ -1346,7 +1346,7 @@ def main():
             emit_success(result, message="debt_payment", chapter=args.chapter)
 
     elif args.command == "create-override-contract":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         contract = OverrideContractMeta(
             chapter=data["chapter"],
             constraint_type=data["constraint_type"],
@@ -1361,7 +1361,7 @@ def main():
         emit_success({"id": contract_id}, message="override_contract_created")
 
     elif args.command == "create-debt":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         debt = ChaseDebtMeta(
             debt_type=data["debt_type"],
             original_amount=data.get("original_amount", 1.0),
@@ -1383,7 +1383,7 @@ def main():
             emit_error("NOT_FOUND", f"未找到 Override Contract #{args.contract_id}")
 
     elif args.command == "save-chapter-reading-power":
-        data = load_json_arg(args.data)
+        data = load_json_arg(args.data, base_dir=args.project_root)
         meta = ChapterReadingPowerMeta(
             chapter=data["chapter"],
             hook_type=data.get("hook_type", ""),

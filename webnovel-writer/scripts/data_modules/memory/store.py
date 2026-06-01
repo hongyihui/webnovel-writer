@@ -233,8 +233,9 @@ def main() -> None:
     if args.command == "update":
         from .writer import MemoryWriter
 
-        payload = load_json_arg(args.data)
-        writer = MemoryWriter(config or get_config())
+        resolved_config = config or get_config()
+        payload = load_json_arg(args.data, base_dir=resolved_config.project_root)
+        writer = MemoryWriter(resolved_config)
         result = writer.update_from_chapter_result(args.chapter, payload)
         print_success(result, message="memory_updated")
         return
