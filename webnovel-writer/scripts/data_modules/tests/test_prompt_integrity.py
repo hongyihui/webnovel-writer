@@ -345,6 +345,10 @@ def test_data_agent_is_described_as_extraction_only_not_direct_write_mainline():
     assert "event_type" in text
     assert "subject" in text
     assert "直接写入 index.db 和 state.json" not in text
+    # data-agent 不得携带可运行的 chapter-commit 命令（commit 是主流程的事实提交入口，data-agent 只产 artifact）
+    assert not re.search(r"webnovel\.py[^\n]+chapter-commit", text), (
+        "data-agent.md 不应出现可运行的 webnovel.py ... chapter-commit 命令"
+    )
 
 
 # (已按 plan §12.2 退役) test_webnovel_write_data_agent_prompt_requires_extraction_schema：

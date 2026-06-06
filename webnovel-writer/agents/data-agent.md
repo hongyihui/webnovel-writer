@@ -19,14 +19,9 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" inde
 python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index recent-appearances --limit 20
 python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-aliases --entity "{entity_id}"
 python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-by-alias --alias "{alias}"
-
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" chapter-commit \
-  --chapter {chapter} \
-  --review-result "{project_root}/.webnovel/tmp/review_results.json" \
-  --fulfillment-result "{project_root}/.webnovel/tmp/fulfillment_result.json" \
-  --disambiguation-result "{project_root}/.webnovel/tmp/disambiguation_result.json" \
-  --extraction-result "{project_root}/.webnovel/tmp/extraction_result.json"
 ```
+
+chapter-commit 由写章主流程运行，data-agent 不在此执行（见 §5 边界）。
 
 ## 3. 流程
 
